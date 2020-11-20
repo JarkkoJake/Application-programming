@@ -5,6 +5,7 @@ def next_id():
     if len(user_list == 0):
         return 1
     return len(user_list)+1
+
 def calc_rating(items):
     sum = 0
     n = 0
@@ -12,6 +13,7 @@ def calc_rating(items):
         sum = i.rating
         n += 1
     return sum/n
+
 class User:
     def __init__(self, data):
         self.id = next_id()
@@ -23,4 +25,3 @@ class User:
         self.profile_picture = None
         self.is_admin = False
         user_list.append(self)
-
