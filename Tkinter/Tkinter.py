@@ -1,4 +1,4 @@
-import tkinter
+#import tkinter
 from tkinter import *
 Win = Tk()
 Win.geometry("1000x600")
