@@ -31,6 +31,7 @@ def register_resources(app):
     # api.add_resource(ItemListResource, "/items")
     # api.add_resource(ItemResource, "/items/<int:item_id>")
     # api.add_resource(ItemRatingsResource, "/items/<int:item_id>/ratings")
+
 if __name__ == "__main__":
     app = create_app()
-    app.run()
+    app.run(port=5050, debug=True)
