@@ -9,18 +9,25 @@ from resources.utils import user_not_found, item_not_found
 
 user_schema = UserSchema
 user_public_schema = UserSchema(exclude = ("email", ))
+
 class UserListResource(Resource):
     def post(self):
         json_data = request.get_json()
+
         data, errors = user_schema.load(data = json_data)
+
         if errors:
-            return {"message":"Validation errors", "errors":errors}, HTTPStatus.BAD_REQUEST
+            return {"message":"Validation errors", "errors": errors}, HTTPStatus.BAD_REQUEST
+
         if User.get_by_username(data.get("username")):
             return {"message":"username already used"}, HTTPStatus.BAD_REQUEST
+
         if User.get_by_email(data.get("email")):
             return {"message":"email already used"}, HTTPStatus.BAD_REQUEST
+
         user = User(**data)
         user.save()
+
         return user_schema.dump(user).data(), HTTPStatus.CREATED
 
 class UserResource(Resource):
