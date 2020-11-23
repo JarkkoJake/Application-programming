@@ -1,32 +1,33 @@
+from extensions import db
+from sqlalchemy.dialects import postgresql
+
 item_list = []
 
-def get_last_id():
-    if item_list:
-        last_item = item_list[-1]
-    else:
-        return 1
-    return last_item.id + 1
 
-class Item:
-    def __init__(self, name, description, tags, rating, ratings, price, amount):
-        self.id = get_last_id()
-        self.name = name
-        self.description = description
-        self.tags = tags
-        self.rating = 0
-        self.ratings = 0
-        self.price = price
-        self.amount = amount
+class Item(db.Model):
 
-    @property
-    def data(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "description": self.description,
-            "tags": self.tags,
-            "rating": self.rating,
-            "ratings": self.ratings,
-            "price": self.price,
-            "amount": self.amount
-        }
+    __tablename__ = "item"
+
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.String(200))
+    tags = db.Column(postgresql.ARRAY(db.String(300)))
+    ratings = db.Column(postgresql.ARRAY(db.String(300)))
+    rating = db.Column(db.Integer)
+    price = db.Column(db.Integer)
+    amount = db.Column(db.Integer)
+    user_id = db.Column(db.Integer(), db.ForeignKey("user.id"))
+    created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
+
+    @classmethod
+    def get_by_id(cls, instruction_id):
+        return cls.query.filter_by(id=instruction_id).first()
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
