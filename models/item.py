@@ -24,6 +24,10 @@ class Item(db.Model):
     def get_by_id(cls, instruction_id):
         return cls.query.filter_by(id=instruction_id).first()
 
+    @classmethod
+    def get_all(cls):
+        return cls.query.filer_by().all()
+
     def save(self):
         db.session.add(self)
         db.session.commit()
