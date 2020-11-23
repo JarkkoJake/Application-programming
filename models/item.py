@@ -21,8 +21,12 @@ class Item(db.Model):
     updated_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now(), onupdate=db.func.now())
 
     @classmethod
-    def get_by_id(cls, instruction_id):
-        return cls.query.filter_by(id=instruction_id).first()
+    def get_by_id(cls, item_id):
+        return cls.query.filter_by(id=item_id).first()
+
+    @classmethod
+    def get_by_tags(cls, tags):
+        return cls.query.filter_by(tags=tags).all()
 
     @classmethod
     def get_all(cls):

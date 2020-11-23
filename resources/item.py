@@ -65,7 +65,6 @@ class ItemListResource(Resource):
             item.price = data.get("price") or item.price
             item.amount = data.get("amount") or item.amount
 
-
             item.save()
 
             return item_schema.dump(item).data, HTTPStatus.OK
@@ -81,6 +80,16 @@ class ItemListResource(Resource):
             current_user = get_jwt_identity()
 
             return item.data(), HTTPStatus.OK
+
+        @jwt_optional
+        def get(self, tags):
+
+            tags = Item.get_by_tags(tags=tags)
+
+            if tags is None:
+                return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
+
+            return tags.data(), HTTPStatus.OK
 
         @jwt_required
         def put(self, item_id):
