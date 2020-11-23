@@ -1,14 +1,14 @@
 from flask import request
 from flask_restful import Resource
 from http import HTTPStatus
-# from utils import hash_password
+from utils import hash_password
 from models.user import User
 from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
-# from schemas.user import UserSchema
+from schemas.user import UserSchema
 from resources.utils import user_not_found, item_not_found
 
-# user_schema = UserSchema
-# user_public_schema = UserSchema(exclude = ("email", ))
+user_schema = UserSchema
+user_public_schema = UserSchema(exclude = ("email", ))
 class UserListResource(Resource):
     def post(self):
         json_data = request.get_json()
