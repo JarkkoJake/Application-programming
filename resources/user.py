@@ -22,6 +22,7 @@ class UserListResource(Resource):
         user = User(**data)
         user.save()
         return user_schema.dump(user).data(), HTTPStatus.CREATED
+
 class UserResource(Resource):
     @jwt_optional
     def get(self, username):

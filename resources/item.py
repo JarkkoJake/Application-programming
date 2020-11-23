@@ -1,9 +1,11 @@
 from flask import request
 from flask_restful import Resource
 from http import HTTPStatus
+from models.user import User
 from models.item import Item
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
 from schemas.item import ItemSchema
+from resources.utils import user_not_found,item_not_found
 
 item_schema = ItemSchema()
 item_list_schema = ItemSchema(many=True)
@@ -34,7 +36,14 @@ class ItemListResource(Resource):
         item.save()
 
         return item_schema.dump(item).data, HTTPStatus.CREATED
-
+class UserItemListResource(Resource):
+    @jwt_optional
+    def get(self, username):
+        user = User.get_by_username(username=username)
+        if not user:
+            user_not_found()
+        items = Item.get_all_by_user(user_id=user.id)
+        return item_list_schema.dump(items).data, HTTPStatus.OK
 class ItemResource(Resource):
 
     @jwt_required

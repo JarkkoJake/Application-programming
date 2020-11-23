@@ -2,8 +2,8 @@ from flask import Flask
 from flask_restful import Api
 from flask_migrate import Migrate
 from config import Config
-from resources.item import ItemListResource, ItemResource
-# from resources.user import (all resources)
+from resources.item import ItemListResource, UserItemListResource, ItemResource
+from resources.user import UserListResource, UserResource, MeResource
 from resources.token import TokenResource ,RefreshResource, RevokeResource, black_list
 from extensions import jwt, db
 
@@ -25,10 +25,10 @@ def register_extensions(app):
 
 def register_resources(app):
     api = Api(app)
-    # api.add_resource(UserListResource, "/users")
-    # api.add_resource(UserResource, "/users/<string:username>")
-    # api.add_resource(UserItemListResource, "/users/<string:username>/items")
-    # api.add_resource(MeResource, "/me")
+    api.add_resource(UserListResource, "/users")
+    api.add_resource(UserResource, "/users/<string:username>")
+    api.add_resource(UserItemListResource, "/users/<string:username>/items")
+    api.add_resource(MeResource, "/me")
     api.add_resource(ItemListResource, "/items")
     api.add_resource(ItemResource, "/items/<int:item_id>")
     # api.add_resource(ItemRatingsResource, "/items/<int:item_id>/ratings")
