@@ -7,8 +7,8 @@ from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
 from schemas.user import UserSchema
 from resources.utils import user_not_found, item_not_found
 
-user_schema = UserSchema
-user_public_schema = UserSchema(exclude = ("email", ))
+user_schema = UserSchema()
+user_public_schema = UserSchema(exclude = ("email", "created_at", "updated_at", ))
 
 class UserListResource(Resource):
     def post(self):
@@ -28,7 +28,7 @@ class UserListResource(Resource):
         user = User(**data)
         user.save()
 
-        return user_schema.dump(user).data(), HTTPStatus.CREATED
+        return user_schema.dump(user).data, HTTPStatus.CREATED
 
 class UserResource(Resource):
     @jwt_optional
@@ -38,12 +38,12 @@ class UserResource(Resource):
             user_not_found()
         current_user = get_jwt_identity()
         if current_user == user.id:
-            data = user_schema.dump(user).data()
+            data = user_schema.dump(user).data
         else:
-            data = user_public_schema.dump(user).data()
+            data = user_public_schema.dump(user).data
         return data, HTTPStatus.OK
 class MeResource(Resource):
     @jwt_required
     def get(self):
         user = User.get_by_id(id = get_jwt_identity())
-        return user_schema.dump(user).data()
+        return user_schema.dump(user).data

@@ -18,7 +18,6 @@ class ItemListResource(Resource):
 
         return item_list_schema.dump(items).data, HTTPStatus.OK
 
-        return {"data": data}, HTTPStatus.OK
 
     @jwt_required
     def post(self):
@@ -86,19 +85,19 @@ class ItemResource(Resource):
         if item is None:
             return {"message": "Item not found"}, HTTPStatus.NOT_FOUND
 
-        current_user = get_jwt_identity()
+#        current_user = get_jwt_identity()
 
-        return item.data(), HTTPStatus.OK
+        return item_schema.dump(item), HTTPStatus.OK
 
-    @jwt_optional
-    def get(self, tags):
-
-        tags = Item.get_by_tags(tags=tags)
-
-        if tags is None:
-            return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
-
-        return tags.data(), HTTPStatus.OK
+#    @jwt_optional
+#    def get(self, tags):
+#
+#        tags = Item.get_by_tags(tags=tags)
+#
+#        if tags is None:
+#            return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
+#
+#        return tags.data(), HTTPStatus.OK
 
     @jwt_required
     def put(self, item_id):
@@ -143,3 +142,14 @@ class ItemResource(Resource):
         item.delete()
 
         return {"message": "Item deleted"}, HTTPStatus.NO_CONTENT
+
+#class ItemTagResource(Resource):
+#    @jwt_optional
+#    def get(self, tag):
+#
+#        tags = Item.get_by_tags(tag=tag)
+#
+#        if tags is None:
+#            return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
+#
+#        return tags.data(), HTTPStatus.OK

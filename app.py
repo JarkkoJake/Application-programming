@@ -4,7 +4,7 @@ from flask_migrate import Migrate
 from config import Config
 from resources.item import ItemListResource, UserItemListResource, ItemResource
 from resources.user import UserListResource, UserResource, MeResource
-from resources.token import TokenResource ,RefreshResource, RevokeResource, black_list
+from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
 from extensions import jwt, db
 
 def create_app():
@@ -13,6 +13,7 @@ def create_app():
     register_extensions(app)
     register_resources(app)
     return app
+
 def register_extensions(app):
     db.init_app(app)
     migrate = Migrate(app, db)
@@ -33,7 +34,9 @@ def register_resources(app):
     api.add_resource(ItemResource, "/items/<int:item_id>")
     # api.add_resource(ItemRatingsResource, "/items/<int:item_id>/ratings")
     api.add_resource(TokenResource, "/token")
+    api.add_resource(RefreshResource, "/refresh")
+    api.add_resource(RevokeResource, "/revoke")
 
 if __name__ == "__main__":
     app = create_app()
-    app.run(port=5051, debug=True)
+    app.run()

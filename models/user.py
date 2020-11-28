@@ -7,7 +7,7 @@ class User(db.Model):
     username = db.Column(db.String(100), nullable=False, unique=True)
     email = db.Column(db.String(100), nullable=False, unique=True)
     password = db.Column(db.String(200), nullable=False)
-    items = db.relationship("item", backref="user")
+    items = db.relationship("Item", backref="user")
     rating = db.Column(db.Float())
     profile_picture = db.Column(db.String(300))
     is_admin = db.Column(db.Boolean(), default=False)
