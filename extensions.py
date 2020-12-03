@@ -6,4 +6,3 @@ db = SQLAlchemy()
 jwt = JWTManager()
 
 image_set = UploadSet("images", IMAGES)
-UPLOADED_IMAGES_DEST = "static/images"

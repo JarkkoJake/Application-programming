@@ -11,7 +11,7 @@ import os
 
 user_schema = UserSchema()
 user_public_schema = UserSchema(exclude = ("email", "created_at", "updated_at", ))
-user_profile_picture_schema = UserSchema(only=("profile_picture"))
+user_profile_picture_schema = UserSchema(only=("profile_picture", ))
 
 class UserListResource(Resource):
     def post(self):
@@ -53,7 +53,7 @@ class MeResource(Resource):
 class UserProfilePictureUploadResource(Resource):
     @jwt_required
     def put(self):
-        file = request.get("profile_picture")
+        file = request.files.get("profile_picture")
         if not file:
             return {"message":"Not a valid image"}, HTTPStatus.BAD_REQUEST
         if not image_set.file_allowed(file, file.filename):
