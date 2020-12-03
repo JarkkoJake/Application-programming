@@ -3,10 +3,11 @@ from flask_restful import Api
 from flask_migrate import Migrate
 from config import Config
 from resources.item import ItemListResource, UserItemListResource, ItemResource
-from resources.user import UserListResource, UserResource, MeResource
+from resources.user import UserListResource, UserResource, MeResource, UserProfilePictureUploadResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
 from resources.rating import RatingListResource
-from extensions import jwt, db
+from extensions import jwt, db, image_set
+from flask_uploads import configure_uploads, patch_request_class
 
 def create_app():
     app = Flask(__name__)
@@ -19,6 +20,8 @@ def register_extensions(app):
     db.init_app(app)
     migrate = Migrate(app, db)
     jwt.init_app(app)
+    configure_uploads(app, image_set)
+    patch_request_class(app, 10 * 1024 * 1024)
 
     @jwt.token_in_blacklist_loader
     def check_if_token_in_blacklist(decrypted_token):
@@ -30,6 +33,7 @@ def register_resources(app):
     api.add_resource(UserListResource, "/users")
     api.add_resource(UserResource, "/users/<string:username>")
     api.add_resource(UserItemListResource, "/users/<string:username>/items")
+    api.add_resource(UserProfilePictureUploadResource, "/users/profile_pictures")
     api.add_resource(MeResource, "/me")
     api.add_resource(ItemListResource, "/items")
     api.add_resource(ItemResource, "/items/<int:item_id>")
