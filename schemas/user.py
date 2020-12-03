@@ -14,7 +14,7 @@ class UserSchema(Schema):
     profile_picture = fields.Method(serialize="dump_profile_picture")
     def dump_profile_picture(self, user):
         if user.profile_picture:
-            return url_for("static", filename="images/profiles/{}".format(user.profile_picture),
+            return url_for("static", filename="images/profile-pictures/{}".format(user.profile_picture),
                            _external=True)
         else:
             return url_for("static", filename="images/assets/default-profile.jpg")
