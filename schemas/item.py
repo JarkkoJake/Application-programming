@@ -8,7 +8,7 @@ class ItemSchema(Schema):
     id = fields.Integer(dump_only=True)
     name = fields.String(required=True,validate=[validate.Length(max=100)])
     description = fields.String(validate=[validate.Length(max=200)])
-    tags = fields.List(fields.String())
+    tags = fields.Raw()
     price = fields.Float()
     amount = fields.Integer()
     rating = fields.Float()

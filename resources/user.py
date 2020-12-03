@@ -1,14 +1,17 @@
 from flask import request
 from flask_restful import Resource
 from http import HTTPStatus
-from utils import hash_password
+from utils import hash_password, save_image
 from models.user import User
 from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
 from schemas.user import UserSchema
 from resources.utils import user_not_found, item_not_found
+from extensions import image_set
+import os
 
 user_schema = UserSchema()
 user_public_schema = UserSchema(exclude = ("email", "created_at", "updated_at", ))
+user_profile_picture_schema = UserSchema(only=("profile_picture", ))
 
 class UserListResource(Resource):
     def post(self):
@@ -47,3 +50,20 @@ class MeResource(Resource):
     def get(self):
         user = User.get_by_id(id = get_jwt_identity())
         return user_schema.dump(user).data
+class UserProfilePictureUploadResource(Resource):
+    @jwt_required
+    def put(self):
+        file = request.files.get("profile_picture")
+        if not file:
+            return {"message":"Not a valid image"}, HTTPStatus.BAD_REQUEST
+        if not image_set.file_allowed(file, file.filename):
+            return {"message":"File type not allowed"}, HTTPStatus.BAD_REQUEST
+        user = User.get_by_id(id=get_jwt_identity())
+        if user.profile_picture:
+            profile_picture_path = image_set.path(folder="profile_pictures", filename=user.profile_picture)
+            if os.path.exists(profile_picture_path):
+                os.remove(profile_picture_path)
+        filename = save_image(image=file, folder="profile-pictures")
+        user.profile_picture = filename
+        user.save()
+        return user_profile_picture_schema.dump(user).data, HTTPStatus.OK

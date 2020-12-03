@@ -9,7 +9,7 @@ class User(db.Model):
     password = db.Column(db.String(200), nullable=False)
     items = db.relationship("Item", backref="user")
     rating = db.Column(db.Float())
-    profile_picture = db.Column(db.String(300))
+    profile_picture = db.Column(db.String(300), default=None)
     is_admin = db.Column(db.Boolean(), default=False)
     created_at = db.Column(db.DateTime(), nullable=False,
                            server_default=db.func.now())
