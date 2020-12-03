@@ -3,7 +3,7 @@ from flask_restful import Resource
 from http import HTTPStatus
 from utils import hash_password, save_image
 from models.user import User
-from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required, fresh_jwt_required
 from schemas.user import UserSchema
 from resources.utils import user_not_found, item_not_found
 from extensions import image_set
@@ -45,6 +45,27 @@ class UserResource(Resource):
         else:
             data = user_public_schema.dump(user).data
         return data, HTTPStatus.OK
+
+    @fresh_jwt_required
+    def patch(self, username):
+        json_data = request.get_json()
+        data, errors = user_schema.load(data = json_data, partial=("name",))
+        current_user = get_jwt_identity()
+        user = User.get_by_username(username=username)
+
+        if errors:
+            return {"message":"Validation errors", "errors": errors}, HTTPStatus.BAD_REQUEST
+
+        if user.id != current_user:
+            return {"message": "Access is not allowed"}, HTTPStatus.FORBIDDEN
+
+        user.username = data.get("username") or user.username
+        user.email = data.get("email") or user.email
+        user.password = data.get("password") or user.password
+
+        user.save()
+        return user_schema.dump(user).data, HTTPStatus.OK
+
 class MeResource(Resource):
     @jwt_required
     def get(self):
