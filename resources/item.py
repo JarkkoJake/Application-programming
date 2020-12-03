@@ -143,13 +143,13 @@ class ItemResource(Resource):
 
         return {"message": "Item deleted"}, HTTPStatus.NO_CONTENT
 
-#class ItemTagResource(Resource):
-#    @jwt_optional
-#    def get(self, tag):
-#
-#        tags = Item.get_by_tags(tag=tag)
-#
-#        if tags is None:
-#            return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
-#
-#        return tags.data(), HTTPStatus.OK
+class ItemTagResource(Resource):
+    @jwt_optional
+    def get(self, tag):
+
+        tags = Item.get_by_tags(tag=tag)
+
+        if tags is None:
+            return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
+
+        return tags.data(), HTTPStatus.OK
