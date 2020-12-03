@@ -145,11 +145,11 @@ class ItemResource(Resource):
 
 class ItemTagResource(Resource):
     @jwt_optional
-    def get(self, tag):
+    def get(self, item_tag):
 
-        tags = Item.get_by_tags(tag=tag)
+        tags = Item.get_by_tags(item_tag=item_tag)
 
         if tags is None:
             return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
 
-        return tags.data(), HTTPStatus.OK
+        return item_schema.dump(tags), HTTPStatus.OK
