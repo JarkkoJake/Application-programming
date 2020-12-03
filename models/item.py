@@ -33,8 +33,9 @@ class Item(db.Model):
         return cls.query.filter_by(cls.tags.ilike(keyword).order_by(desc(cls.created_at)).paginate(page=page, per_page=per_page))
 
     @classmethod
-    def get_all(cls):
-        return cls.query.filter_by().all()
+    def get_all(cls, q, page, per_page):
+        keyword = "%{keyword}%".format(keyword=q)
+        return cls.query.filter_by(cls.tags.ilike(keyword).order_by(desc(cls.created_at)).paginate(page=page, per_page=per_page))
 
     @classmethod
     def get_all_by_user(cls, user_id):

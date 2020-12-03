@@ -19,14 +19,12 @@ item_picture_schema = ItemSchema(only=("picture", ))
 
 class ItemListResource(Resource):
 
-    @use_kwargs({"q":fields.Str(missing=""), "page":fields.Int(missing=1), "per_page": fields.Int(missing=20)})
+    def get(self):
+        @use_kwargs({"q": fields.Str(missing=""), "page": fields.Int(missing=1), "per_page": fields.Int(missing=20)})
+        def get(self, q, page, per_page):
+            paginated_items = Item.get_all(q, page, per_page)
 
-    def get(self, q, page, per_page):
-
-        paginated_items = Item.get_all(q, page, per_page)
-
-        return item_pagination_schema.dump(paginated_items).data, HTTPStatus.OK
-
+            return item_pagination_schema.dump(paginated_items).data, HTTPStatus.OK
 
     @jwt_required
     def post(self):
@@ -158,9 +156,10 @@ class ItemTagResource(Resource):
 
     @use_kwargs({"q": fields.Str(missing=""), "page": fields.Int(missing=1), "per_page": fields.Int(missing=20)})
     def get(self, q, page, per_page):
-        paginated_items = Item.get_all(q, page, per_page)
+        paginated_items = Item.get_by_tags(q, page, per_page)
 
         return item_pagination_schema.dump(paginated_items).data, HTTPStatus.OK
+
 class ItemPictureUploadResource(Resource):
     @jwt_required
     def put(self, item_id):
@@ -168,7 +167,7 @@ class ItemPictureUploadResource(Resource):
         current_user = get_jwt_identity()
         item = Item.get_by_id(item_id=item_id)
         if item.user_id != current_user:
-            return {"message", "Access not allowed"}, HTTPStatus.FORBIDDEN
+            return {"message": "Access not allowed"}, HTTPStatus.FORBIDDEN
         if not file:
             return {"message": "Not a valid image"}, HTTPStatus.BAD_REQUEST
         if not image_set.file_allowed(file, file.filename):
