@@ -47,16 +47,30 @@ class RatingListResource(Resource):
 
         i_rating_dict = {"rating": i_rating / r}
 
-        item.name = item.name
-        item.description = item.description
-        item.tags = item.tags
-        item.ratings = item.ratings
+
         item.rating = i_rating_dict.get("rating")
-        item.price = item.price
-        item.amount = item.amount
+
 
         item.save()
 ###
+        user = User.get_by_id(id = current_user)
+        user_items = Rating.get_by_user(user_id=item.user_id)
+        u_rating = 0.0
+        r = 0
+
+        for rating in user_items:
+            r = r + 1
+            u_rating = u_rating + rating.__dict__["rating"]
+
+        u_rating_dict = {"rating": u_rating / r}
+
+        user.rating = u_rating_dict.get("rating")
+
+        user.save()
+
+
+
+
         return rating_schema.dump(rating).data, HTTPStatus.CREATED
 
     @jwt_required
@@ -103,6 +117,21 @@ class RatingListResource(Resource):
 
         item.save()
 ####
+        user = User.get_by_id(id=current_user)
+        user_items = Rating.get_by_user(user_id=item.user_id)
+        u_rating = 0.0
+        r = 0
+
+        for rating in user_items:
+            r = r + 1
+            u_rating = u_rating + rating.__dict__["rating"]
+
+        u_rating_dict = {"rating": u_rating / r}
+
+        user.rating = u_rating_dict.get("rating")
+
+        user.save()
+
         return rating_schema.dump(rating).data, HTTPStatus.OK
 
     @jwt_required
