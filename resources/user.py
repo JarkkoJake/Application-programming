@@ -63,7 +63,7 @@ class UserProfilePictureUploadResource(Resource):
             profile_picture_path = image_set.path(folder="profile_pictures", filename=user.profile_picture)
             if os.path.exists(profile_picture_path):
                 os.remove(profile_picture_path)
-        filename = save_image(image=file, folder="profile-pictures")
+        filename = save_image(image=file, folder="profile_pictures")
         user.profile_picture = filename
         user.save()
         return user_profile_picture_schema.dump(user).data, HTTPStatus.OK

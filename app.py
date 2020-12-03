@@ -3,7 +3,7 @@ from flask_restful import Api
 from flask_migrate import Migrate
 from config import Config
 from resources.item import ItemListResource, UserItemListResource, ItemResource
-from resources.user import UserListResource, UserResource, MeResource
+from resources.user import UserListResource, UserResource, MeResource, UserProfilePictureUploadResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
 from resources.rating import RatingListResource
 from extensions import jwt, db
@@ -30,6 +30,7 @@ def register_resources(app):
     api.add_resource(UserListResource, "/users")
     api.add_resource(UserResource, "/users/<string:username>")
     api.add_resource(UserItemListResource, "/users/<string:username>/items")
+    api.add_resource(UserProfilePictureUploadResource, "/users/profile_picture")
     api.add_resource(MeResource, "/me")
     api.add_resource(ItemListResource, "/items")
     api.add_resource(ItemResource, "/items/<int:item_id>")
