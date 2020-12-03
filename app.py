@@ -5,6 +5,7 @@ from config import Config
 from resources.item import ItemListResource, UserItemListResource, ItemResource
 from resources.user import UserListResource, UserResource, MeResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
+from resources.rating import RatingListResource
 from extensions import jwt, db
 
 def create_app():
@@ -36,6 +37,7 @@ def register_resources(app):
     api.add_resource(TokenResource, "/token")
     api.add_resource(RefreshResource, "/refresh")
     api.add_resource(RevokeResource, "/revoke")
+    api.add_resource(RatingListResource, "/items/<int:item_id>/ratings")
 
 if __name__ == "__main__":
     app = create_app()
