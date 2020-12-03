@@ -18,3 +18,9 @@ class RatingSchema(Schema):
                            only=["id", "username"])
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
+
+    @post_dump(pass_many=True)
+    def wrap(self, data, many, **kwargs):
+        if many:
+            return {"data": data}
+        return data
