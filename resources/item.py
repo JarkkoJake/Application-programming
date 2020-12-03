@@ -167,7 +167,7 @@ class ItemPictureUploadResource(Resource):
         current_user = get_jwt_identity()
         item = Item.get_by_id(item_id=item_id)
         if item.user_id != current_user:
-            return {"message", "Access not allowed"}, HTTPStatus.FORBIDDEN
+            return {"message": "Access not allowed"}, HTTPStatus.FORBIDDEN
         if not file:
             return {"message": "Not a valid image"}, HTTPStatus.BAD_REQUEST
         if not image_set.file_allowed(file, file.filename):
