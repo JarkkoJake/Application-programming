@@ -2,7 +2,7 @@ from flask import Flask
 from flask_restful import Api
 from flask_migrate import Migrate
 from config import Config
-from resources.item import ItemListResource, UserItemListResource, ItemResource
+from resources.item import ItemListResource, UserItemListResource, ItemResource, ItemTagResource
 from resources.user import UserListResource, UserResource, MeResource
 from resources.token import TokenResource, RefreshResource, RevokeResource, black_list
 from resources.rating import RatingListResource
@@ -33,6 +33,7 @@ def register_resources(app):
     api.add_resource(MeResource, "/me")
     api.add_resource(ItemListResource, "/items")
     api.add_resource(ItemResource, "/items/<int:item_id>")
+    api.add_resource(ItemTagResource, "/items/<string:item_tag>")
     # api.add_resource(ItemRatingsResource, "/items/<int:item_id>/ratings")
     api.add_resource(TokenResource, "/token")
     api.add_resource(RefreshResource, "/refresh")

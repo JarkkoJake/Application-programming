@@ -4,19 +4,24 @@ from http import HTTPStatus
 from models.user import User
 from models.item import Item
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
-from schemas.item import ItemSchema
 from resources.utils import user_not_found,item_not_found
+from webargs import fields
+from webargs.flaskparser import use_kwargs
+from schemas.item import ItemSchema, ItemPaginationSchema
 
+item_pagination_schema = ItemPaginationSchema()
 item_schema = ItemSchema()
 item_list_schema = ItemSchema(many=True)
 
 class ItemListResource(Resource):
 
-    def get(self):
+    @use_kwargs({"q":fields.Str(missing=""), "page":fields.Int(missing=1), "per_page": fields.Int(missing=20)})
 
-        items = Item.get_all()
+    def get(self, q, page, per_page):
 
-        return item_list_schema.dump(items).data, HTTPStatus.OK
+        paginated_items = Item.get_all(q, page, per_page)
+
+        return item_pagination_schema.dump(paginated_items).data, HTTPStatus.OK
 
 
     @jwt_required
@@ -35,6 +40,7 @@ class ItemListResource(Resource):
         item.save()
 
         return item_schema.dump(item).data, HTTPStatus.CREATED
+
 class UserItemListResource(Resource):
     @jwt_optional
     def get(self, username):
@@ -43,6 +49,7 @@ class UserItemListResource(Resource):
             user_not_found()
         items = Item.get_all_by_user(user_id=user.id)
         return item_list_schema.dump(items).data, HTTPStatus.OK
+
 class ItemResource(Resource):
 
     @jwt_required
@@ -144,12 +151,9 @@ class ItemResource(Resource):
         return {"message": "Item deleted"}, HTTPStatus.NO_CONTENT
 
 class ItemTagResource(Resource):
-    @jwt_optional
-    def get(self, item_tag):
 
-        tags = Item.get_by_tags(item_tag=item_tag)
+    @use_kwargs({"q": fields.Str(missing=""), "page": fields.Int(missing=1), "per_page": fields.Int(missing=20)})
+    def get(self, q, page, per_page):
+        paginated_items = Item.get_all(q, page, per_page)
 
-        if tags is None:
-            return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
-
-        return item_schema.dump(tags), HTTPStatus.OK
+        return item_pagination_schema.dump(paginated_items).data, HTTPStatus.OK

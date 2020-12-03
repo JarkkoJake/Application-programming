@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields, post_dump,\
     ValidationError, validates, validate
 from schemas.user import UserSchema
+from schemas.pagination import PaginationSchema
 
 class ItemSchema(Schema):
     class Meta:
@@ -17,8 +18,12 @@ class ItemSchema(Schema):
                            only=["id","username"])
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
-    @post_dump(pass_many=True)
-    def wrap(self, data, many, **kwargs):
-        if many:
-            return {"data":data}
-        return data
+
+#    @post_dump(pass_many=True)
+#    def wrap(self, data, many, **kwargs):
+#        if many:
+#            return {"data":data}
+#        return data
+
+class ItemPaginationSchema(PaginationSchema):
+    data = fields.Nested(ItemSchema, attribute="items", many=True)
