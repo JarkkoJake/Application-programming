@@ -12,6 +12,7 @@ class Item(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(200))
+    picture = db.Column(db.String(300), default=None)
     tags = db.Column(postgresql.ARRAY(db.String(300)))
     rating = db.Column(db.Float)
     price = db.Column(db.Integer)

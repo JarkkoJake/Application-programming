@@ -8,10 +8,14 @@ from resources.utils import user_not_found,item_not_found
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 from schemas.item import ItemSchema, ItemPaginationSchema
+import os
+from utils import save_image
+from extensions import image_set
 
 item_pagination_schema = ItemPaginationSchema()
 item_schema = ItemSchema()
 item_list_schema = ItemSchema(many=True)
+item_picture_schema = ItemSchema(only=("picture", ))
 
 class ItemListResource(Resource):
 
@@ -157,3 +161,23 @@ class ItemTagResource(Resource):
         paginated_items = Item.get_all(q, page, per_page)
 
         return item_pagination_schema.dump(paginated_items).data, HTTPStatus.OK
+class ItemPictureUploadResource(Resource):
+    @jwt_required
+    def put(self, item_id):
+        file = request.files.get("picture")
+        current_user = get_jwt_identity()
+        item = Item.get_by_id(item_id=item_id)
+        if item.user_id != current_user:
+            return {"message", "Access not allowed"}, HTTPStatus.FORBIDDEN
+        if not file:
+            return {"message": "Not a valid image"}, HTTPStatus.BAD_REQUEST
+        if not image_set.file_allowed(file, file.filename):
+            return {"message": "File type not allowed"}, HTTPStatus.BAD_REQUEST
+        if item.picture:
+            picture_path = image_set.path(folder="pictures", filename=item.picture)
+            if os.path.exists(picture_path):
+                os.remove(picture_path)
+        filename = save_image(image=file, folder="pictures")
+        item.picture = filename
+        item.save()
+        return item_picture_schema.dump(item).data, HTTPStatus.OK
