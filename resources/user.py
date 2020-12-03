@@ -56,13 +56,13 @@ class UserProfilePictureUploadResource(Resource):
         file = request.files.get("profile_picture")
         if not file:
             return {"message":"Not a valid image"}, HTTPStatus.BAD_REQUEST
-        if not image_set.file_allowed(file, file.filename):
-            return {"message":"File type not allowed"}, HTTPStatus.BAD_REQUEST
+        """if not image_set.file_allowed(file, file.filename):
+            return {"message":"File type not allowed"}, HTTPStatus.BAD_REQUEST"""
         user = User.get_by_id(id=get_jwt_identity())
-        if user.profile_picture:
-            profile_picture_path = image_set.path(folder="profile_pictures", filename=user.profile_picture)
+        """if user.profile_picture:
+            profile_picture_path = image_set.path(folder="profile-pictures", filename=user.profile_picture)
             if os.path.exists(profile_picture_path):
-                os.remove(profile_picture_path)
+                os.remove(profile_picture_path)"""
         filename = save_image(image=file, folder="profile-pictures")
         user.profile_picture = filename
         user.save()
