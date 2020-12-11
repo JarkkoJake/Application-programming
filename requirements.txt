@@ -10,3 +10,4 @@ marshmallow==2.19.5
 Flask-Uploads==0.2.1
 webargs==5.4.0
 Pillow==6.2.1
+Requests==2.22.0
