@@ -152,7 +152,14 @@ class ItemResource(Resource):
 
 class ItemTagResource(Resource):
 
-    def get(self):
+    def get(self, tags):
+        tags = Item.get_by_tags(tags=tags)
+
+        if tags is None:
+            return {"message": "Items with this tag cannot be found"}, HTTPStatus.NOT_FOUND
+
+        return item_list_schema.dump(tags), HTTPStatus.ok
+
 
 class ItemPictureUploadResource(Resource):
     @jwt_required

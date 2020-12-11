@@ -28,8 +28,8 @@ class Item(db.Model):
         return cls.query.filter_by(id=item_id).first()
 
     @classmethod
-    def get_by_tags(cls, item_tag):
-        return cls.query.filter_by(tags=item_tag).all()
+    def get_by_tags(cls, tags):
+        return cls.query.filter_by(tags=tags).all()
 
     @classmethod
     def get_all(cls):
