@@ -1,7 +1,8 @@
 import requests
+from app import port
 
 address = "http://localhost:"
-port = "5050/"
+port = str(port)+"/"
 header = {"content-type":"JSON"}
 
 def post_user(data):
