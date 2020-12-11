@@ -1,6 +1,6 @@
 from extensions import db
 from sqlalchemy.dialects import postgresql
-from sqlalchemy import asc, desc, or_
+
 
 #item_list = []
 
@@ -28,14 +28,12 @@ class Item(db.Model):
         return cls.query.filter_by(id=item_id).first()
 
     @classmethod
-    def get_by_tags(cls, q, page, per_page):
-        keyword = "%{keyword}%".format(keyword=q)
-        return cls.query.filter_by(cls.tags.ilike(keyword).order_by(desc(cls.created_at)).paginate(page=page, per_page=per_page))
+    def get_by_tags(cls, item_tag):
+        return cls.query.filter_by(tags=item_tag).all()
 
     @classmethod
-    def get_all(cls, q, page, per_page):
-        keyword = "%{keyword}%".format(keyword=q)
-        return cls.query.filter_by(cls.tags.ilike(keyword).order_by(desc(cls.created_at)).paginate(page=page, per_page=per_page))
+    def get_all(cls):
+        return cls.query.all()
 
     @classmethod
     def get_all_by_user(cls, user_id):

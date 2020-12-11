@@ -4,15 +4,15 @@ from http import HTTPStatus
 from models.user import User
 from models.item import Item
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
-from resources.utils import user_not_found,item_not_found
+from resources.util import user_not_found,item_not_found
 from webargs import fields
 from webargs.flaskparser import use_kwargs
-from schemas.item import ItemSchema, ItemPaginationSchema
+from schemas.item import ItemSchema
 import os
 from utils import save_image
 from extensions import image_set
 
-item_pagination_schema = ItemPaginationSchema()
+
 item_schema = ItemSchema()
 item_list_schema = ItemSchema(many=True)
 item_picture_schema = ItemSchema(only=("picture", ))
@@ -20,11 +20,9 @@ item_picture_schema = ItemSchema(only=("picture", ))
 class ItemListResource(Resource):
 
     def get(self):
-        @use_kwargs({"q": fields.Str(missing=""), "page": fields.Int(missing=1), "per_page": fields.Int(missing=20)})
-        def get(self, q, page, per_page):
-            paginated_items = Item.get_all(q, page, per_page)
 
-            return item_pagination_schema.dump(paginated_items).data, HTTPStatus.OK
+        items = Item.get_all()
+        return item_list_schema.dump(items).data, HTTPStatus.OK
 
     @jwt_required
     def post(self):
@@ -94,7 +92,7 @@ class ItemResource(Resource):
         if item is None:
             return {"message": "Item not found"}, HTTPStatus.NOT_FOUND
 
-#        current_user = get_jwt_identity()
+
 
         return item_schema.dump(item), HTTPStatus.OK
 
@@ -154,11 +152,7 @@ class ItemResource(Resource):
 
 class ItemTagResource(Resource):
 
-    @use_kwargs({"q": fields.Str(missing=""), "page": fields.Int(missing=1), "per_page": fields.Int(missing=20)})
-    def get(self, q, page, per_page):
-        paginated_items = Item.get_by_tags(q, page, per_page)
-
-        return item_pagination_schema.dump(paginated_items).data, HTTPStatus.OK
+    def get(self):
 
 class ItemPictureUploadResource(Resource):
     @jwt_required
