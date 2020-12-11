@@ -2,9 +2,6 @@ from extensions import db
 from sqlalchemy.dialects import postgresql
 
 
-#item_list = []
-
-
 class Item(db.Model):
 
     __tablename__ = "item"
@@ -13,7 +10,9 @@ class Item(db.Model):
     name = db.Column(db.String(100), nullable=False)
     description = db.Column(db.String(200))
     picture = db.Column(db.String(300), default=None)
-    tags = db.Column(postgresql.ARRAY(db.String(300)))
+    tag1 = db.Column(db.String(15))
+    tag2 = db.Column(db.String(15))
+    tag3 = db.Column(db.String(15))
     rating = db.Column(db.Float)
     price = db.Column(db.Integer)
     amount = db.Column(db.Integer)
@@ -28,8 +27,8 @@ class Item(db.Model):
         return cls.query.filter_by(id=item_id).first()
 
     @classmethod
-    def get_by_tags(cls, tags):
-        return cls.query.filter_by(tags=tags).all()
+    def get_by_tag(cls, tags):
+        return cls.query.filter_by(tag1=tags).all() + cls.query.filter_by(tag2=tags).all() + cls.query.filter_by(tag3=tags).all()
 
     @classmethod
     def get_all(cls):

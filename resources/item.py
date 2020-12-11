@@ -52,6 +52,7 @@ class UserItemListResource(Resource):
 
 class ItemResource(Resource):
 
+
     @jwt_required
     def patch(self, item_id):
 
@@ -91,8 +92,6 @@ class ItemResource(Resource):
 
         if item is None:
             return {"message": "Item not found"}, HTTPStatus.NOT_FOUND
-
-
 
         return item_schema.dump(item), HTTPStatus.OK
 
@@ -153,13 +152,13 @@ class ItemResource(Resource):
 class ItemTagResource(Resource):
 
     def get(self, tags):
-        tags = Item.get_by_tags(tags=tags)
 
-        if tags is None:
+        items = Item.get_by_tag(tags=tags)
+
+        if items is None:
             return {"message": "Items with this tag cannot be found"}, HTTPStatus.NOT_FOUND
 
-        return item_list_schema.dump(tags), HTTPStatus.ok
-
+        return item_list_schema.dump(items).data, HTTPStatus.OK
 
 class ItemPictureUploadResource(Resource):
     @jwt_required

@@ -3,13 +3,29 @@ from marshmallow import Schema, fields, post_dump,\
 from schemas.user import UserSchema
 from flask_uploads import url_for
 
+
 class ItemSchema(Schema):
     class Meta:
         ordered = True
+
+    def validate_tag2(self, tag1):
+        if self == tag1:
+            raise ValidationError("Tags cant be same")
+        elif len(self) > 15:
+            raise ValidationError("Tag too long")
+
+    def validate_tag3(self, tag2, tag1):
+        if self == tag1 or tag2:
+            raise ValidationError("Tags cant be same")
+        elif len(self) > 15:
+            raise ValidationError("Tag too long")
+
     id = fields.Integer(dump_only=True)
     name = fields.String(required=True, validate=[validate.Length(max=100)])
     description = fields.String(validate=[validate.Length(max=200)])
-    tags = fields.Raw()
+    tag1 = fields.String(required=False, validate=[validate.Length(max=15)])
+    tag2 = fields.String(required=False, validate=[validate.Length(max=15)])
+    tag3 = fields.String(required=False, validate=[validate.Length(max=15)])
     price = fields.Float()
     amount = fields.Integer()
     rating = fields.Float()
@@ -19,6 +35,7 @@ class ItemSchema(Schema):
     created_at = fields.DateTime(dump_only=True)
     updated_at = fields.DateTime(dump_only=True)
     picture = fields.Method(serialize="dump_picture")
+
 
     def dump_picture(self, item):
         if item.picture:
