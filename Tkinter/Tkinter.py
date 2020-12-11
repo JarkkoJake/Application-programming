@@ -55,11 +55,13 @@ class PageOne(tk.Frame):
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Home", font=LARGE_FONT)
         label.pack(pady=10,padx=10)
+        tk.Label(self,textvariable="yo").pack()
+        tk.Listbox(self).pack()
 
 
 
-        button2 = tk.Button(self, text="Page Two",
-                            command=lambda: controller.show_frame(PageTwo))
+        button2 = tk.Button(self, text="back",
+                            command=lambda: controller.show_frame(StartPage))
         button2.pack()
 
 
