@@ -10,7 +10,7 @@ from extensions import jwt, db, image_set
 from flask_uploads import configure_uploads, patch_request_class
 
 # Päivittäkää oman porttinne mukaan
-port = 5050
+port = 5000
 
 def create_app():
     app = Flask(__name__)

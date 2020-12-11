@@ -12,7 +12,6 @@ import os
 from utils import save_image
 from extensions import image_set
 
-
 item_schema = ItemSchema()
 item_list_schema = ItemSchema(many=True)
 item_picture_schema = ItemSchema(only=("picture", ))
@@ -36,6 +35,10 @@ class ItemListResource(Resource):
             return {"message": "Validation errors", "errors" : errors }, HTTPStatus.BAD_REQUEST
 
         item = Item(**data)
+
+        if item.tag1 == item.tag2 or item.tag1 == item.tag3 or item.tag2 == item.tag3:
+            return {"message": "Tags cant be the same"}, HTTPStatus.BAD_REQUEST
+
         item.user_id = current_user
         item.save()
 

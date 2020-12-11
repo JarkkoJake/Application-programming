@@ -8,17 +8,6 @@ class ItemSchema(Schema):
     class Meta:
         ordered = True
 
-    def validate_tag2(self, tag1):
-        if self == tag1:
-            raise ValidationError("Tags cant be same")
-        elif len(self) > 15:
-            raise ValidationError("Tag too long")
-
-    def validate_tag3(self, tag2, tag1):
-        if self == tag1 or tag2:
-            raise ValidationError("Tags cant be same")
-        elif len(self) > 15:
-            raise ValidationError("Tag too long")
 
     id = fields.Integer(dump_only=True)
     name = fields.String(required=True, validate=[validate.Length(max=100)])
@@ -36,6 +25,7 @@ class ItemSchema(Schema):
     updated_at = fields.DateTime(dump_only=True)
     picture = fields.Method(serialize="dump_picture")
 
+    validate = validate
 
     def dump_picture(self, item):
         if item.picture:
