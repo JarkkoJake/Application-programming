@@ -5,7 +5,7 @@ from utils import hash_password, save_image
 from models.user import User
 from flask_jwt_extended import jwt_optional, get_jwt_identity, jwt_required, fresh_jwt_required
 from schemas.user import UserSchema
-from resources.utils import user_not_found, item_not_found
+from resources.util import user_not_found, item_not_found
 from extensions import image_set
 import os
 

@@ -1,18 +1,12 @@
 import tkinter as tk
 
-
 LARGE_FONT= ("Verdana", 12)
-
-def exit():
-    Main.destroy()
-
 class Main(tk.Tk):
 
     def __init__(self, *args, **kwargs):
 
         tk.Tk.__init__(self, *args, **kwargs)
         container = tk.Frame(self)
-
         container.pack(side="top", fill="both", expand = True)
 
         container.grid_rowconfigure(0, weight=1)
@@ -40,9 +34,14 @@ class StartPage(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
+
         label = tk.Label(self, text="Login", font=LARGE_FONT)
         label.pack(pady=10,padx=10)
-
+        tk.Label(self,text="Login credetials",bg="white").pack()
+        tk.Label(self,text="username").pack()
+        tk.Entry(self,textvariable="").pack()
+        tk.Label(self,text="password").pack()
+        tk.Entry(self,textvariable="").pack()
         button = tk.Button(self, text="Login",
                            command=lambda: controller.show_frame(PageOne))
         button.pack()
@@ -50,20 +49,19 @@ class StartPage(tk.Frame):
         button2 = tk.Button(self, text="Exit",command=exit)
         button2.pack()
 
-
 class PageOne(tk.Frame):
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        label = tk.Label(self, text="Page One!!!", font=LARGE_FONT)
+        label = tk.Label(self, text="Home", font=LARGE_FONT)
         label.pack(pady=10,padx=10)
+        tk.Label(self,textvariable="yo").pack()
+        tk.Listbox(self).pack()
 
-        button1 = tk.Button(self, text="Back to Home",
+
+
+        button2 = tk.Button(self, text="back",
                             command=lambda: controller.show_frame(StartPage))
-        button1.pack()
-
-        button2 = tk.Button(self, text="Page Two",
-                            command=lambda: controller.show_frame(PageTwo))
         button2.pack()
 
 
