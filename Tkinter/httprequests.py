@@ -49,5 +49,4 @@ def get_all_by_user(username):
     url = address + port + "users/" + username + "/items"
     req = requests.get(url)
     return req.json()
-print(get_items())
 
