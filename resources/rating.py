@@ -96,10 +96,12 @@ def update_ratings(item_id):
 
     # lasketaan userin kaikkien itemien ratingien keskiarvo
     for rating in user_items:
+        if rating.__dict__["rating"] is None:
+            continue
         ru = ru + 1
         u_rating = u_rating + rating.__dict__["rating"]
 
-    u_rating_dict = {"rating": u_rating / r}
+    u_rating_dict = {"rating": u_rating / ru}
     user.rating = u_rating_dict.get("rating")
 
     # tallennetaan muutokset

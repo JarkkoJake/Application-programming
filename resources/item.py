@@ -5,6 +5,7 @@ from models.user import User
 from models.item import Item
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
 from resources.util import user_not_found,item_not_found
+from resources.item_history import saveItemHistory
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 from schemas.item import ItemSchema
@@ -42,6 +43,8 @@ class ItemListResource(Resource):
         item.user_id = current_user
         item.save()
 
+        saveItemHistory(item.id)
+
         return item_schema.dump(item).data, HTTPStatus.CREATED
 
 class UserItemListResource(Resource):
@@ -78,13 +81,17 @@ class ItemResource(Resource):
 
         item.name = data.get("name") or item.name
         item.description = data.get("description") or item.description
-        item.tags = data.get("tags") or item.tags
+        item.tag1 = data.get("tag1") or item.tag1
+        item.tag2 = data.get("tag2") or item.tag2
+        item.tag3 = data.get("tag3") or item.tag3
         item.ratings = data.get("ratings") or item.ratings
         item.rating = data.get("rating") or item.rating
         item.price = data.get("price") or item.price
         item.amount = data.get("amount") or item.amount
 
         item.save()
+
+        saveItemHistory(item.id)
 
         return item_schema.dump(item).data, HTTPStatus.OK
 
@@ -97,16 +104,6 @@ class ItemResource(Resource):
             return {"message": "Item not found"}, HTTPStatus.NOT_FOUND
 
         return item_schema.dump(item), HTTPStatus.OK
-
-#    @jwt_optional
-#    def get(self, tags):
-#
-#        tags = Item.get_by_tags(tags=tags)
-#
-#        if tags is None:
-#            return {"message": "Items not found with this tag"}, HTTPStatus.NOT_FOUND
-#
-#        return tags.data(), HTTPStatus.OK
 
     @jwt_required
     def put(self, item_id):
@@ -125,13 +122,16 @@ class ItemResource(Resource):
 
         item.name = json_data["name"]
         item.description = json_data["description"]
-        item.tags = json_data["tags"]
+        item.tag1 = json_data["tag1"]
+        item.tag2 = json_data["tag2"]
+        item.tag3 = json_data["tag3"]
         item.ratings = json_data["ratings"]
         item.rating = json_data["rating"]
         item.price = json_data["price"]
         item.amount = json_data["amount"]
 
         item.save()
+        saveItemHistory(item.id)
 
         return item.data, HTTPStatus.OK
 
@@ -182,4 +182,5 @@ class ItemPictureUploadResource(Resource):
         filename = save_image(image=file, folder="pictures")
         item.picture = filename
         item.save()
+        saveItemHistory(item.id)
         return item_picture_schema.dump(item).data, HTTPStatus.OK
