@@ -38,7 +38,7 @@ class ItemListResource(Resource):
         item = Item(**data)
 
         if item.tag1 == item.tag2 or item.tag1 == item.tag3 or item.tag2 == item.tag3:  #Validoi ettei tagit ole samoja.
-
+                                                                                        #Tagit kuitenkin voi olla tyhjiä
             if item.tag1 and item.tag2 != None:
                 return {"message": "Tags cant be the same"}, HTTPStatus.BAD_REQUEST
             if item.tag1 and item.tag3 != None:
@@ -159,7 +159,7 @@ class ItemTagResource(Resource):    #Hakee tagien mukaan
 
         items = Item.get_by_tag(tags=tags)
 
-        if items is None:
+        if len(items) == 0:
             return {"message": "Items with this tag cannot be found"}, HTTPStatus.NOT_FOUND
 
         return item_list_schema.dump(items).data, HTTPStatus.OK
@@ -170,7 +170,7 @@ class ItemNameResource(Resource):   #Hakee itemin nimen mukaan.
 
         items = Item.get_by_name(name=name)
 
-        if items is None:
+        if len(items) == 0:
 
             return {"message": "Items with this name cannot be found"}, HTTPStatus.NOT_FOUND
 
