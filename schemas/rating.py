@@ -11,7 +11,7 @@ class RatingSchema(Schema):
     item_id = fields.Nested(ItemSchema, attribute="item",
                             dump_only=True,
                             only=["id"])
-    rating = fields.Integer()
+    rating = fields.Integer(required=True)
     rating_text = fields.String(validate=[validate.Length(max=2000)])
     author = fields.Nested(UserSchema, attribute="user",
                            dump_only=True,
@@ -24,3 +24,10 @@ class RatingSchema(Schema):
         if many:
             return {"data": data}
         return data
+
+    @validates("rating")
+    def validate_rating(self, value):
+        if value < 0:
+            raise ValidationError("Rating must be 0-5.")
+        elif value > 5:
+            raise ValidationError("Rating must be 0-5.")
