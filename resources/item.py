@@ -145,7 +145,8 @@ class ItemResource(Resource):
             return {"message": "Item not found"}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
-        if current_user != item.user_id:
+        cuser = User.get_by_id(id=current_user)
+        if current_user != item.user_id and not cuser.is_admin:
             return {"message": "Access is not allowed"}, HTTPStatus.FORBIDDEN
 
         item.delete()
