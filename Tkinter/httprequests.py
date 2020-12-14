@@ -41,6 +41,14 @@ def get_items():
     url = address + port + "items"
     req = requests.get(url)
     return req.json()
+def search_items(tag):
+    url = address + port + "tags/" + str(tag)
+    req = requests.get(url).json()
+    return req
+def search_items_name(tag):
+    url = address + port + "item/" + tag
+    req = requests.get(url)
+    return req.json()
 def get_me(jwt):
     url = address + port + "me"
     req = requests.get(url, headers={"Authorization":"Bearer "+jwt})

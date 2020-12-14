@@ -38,6 +38,8 @@ class StartPage(tk.Frame): # log in screen
 
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent)
+        global access_token
+        access_token = None
 
         self.parent = parent
         self.controller = controller
@@ -107,7 +109,18 @@ class PageOne(tk.Frame): # homepage
         button2.pack(side=tk.BOTTOM)
 
     def search_item(self):
-        pass
+        global item_list
+        item_list = []
+        tag = self.item_search.get()
+        request = httprequests.search_items(tag)
+        if not ("message" in request):
+            item_list.append(request["data"][0])
+        request2 = httprequests.search_items_name(tag)
+        if not("message" in request2):
+            item_list.append(request2["data"][0])
+        print(item_list)
+        app.frames[PageTwo.__name__].update_page()
+        self.controller.show_frame(PageTwo)
     def search_user(self):
         global access_token
         if access_token:
@@ -149,7 +162,7 @@ class PageTwo(tk.Frame): # items page
         tk.Frame.__init__(self, parent)
         label = tk.Label(self, text="Items", font=LARGE_FONT)
         label.pack(pady=10, padx=10)
-        self.item = None
+        self.controller = controller
         self.item_index = 0
         self.name = tk.Label(self, text="")
         self.description = tk.Label(self, text="")
@@ -159,6 +172,7 @@ class PageTwo(tk.Frame): # items page
         self.price = tk.Label(self, text="")
         self.name.pack()
         self.description.pack()
+        self.rating.pack()
         self.author.pack()
         self.amount.pack()
         self.price.pack()
@@ -166,6 +180,8 @@ class PageTwo(tk.Frame): # items page
         self.button_previous = tk.Button(self, text="Previous item", command=lambda: self.change_item(-1))
         self.button_next.pack()
         self.button_previous.pack()
+        self.update_item = tk.Button(self, text="Update Item",
+                                     command=lambda: self.controller.show_frame(NewItemPage))
 
 
         button1 = tk.Button(self, text="Back",
@@ -174,13 +190,21 @@ class PageTwo(tk.Frame): # items page
 
     def update_page(self):
         global item_list
+        global access_token
+        if self.item_index > len(item_list)-1:
+            self.item_index = 0
         item = item_list[self.item_index]
-        self.name.config(text=str(item["name"]))
-        self.description.config(text=str(item["description"]))
-        self.rating.config(text=str(item["rating"]))
-        self.author.config(text=str(item["author"]["username"]))
-        self.price.config(text=str(item["price"]))
-        self.amount.config(text=str(item["amount"]))
+        self.name.config(text="Name: "+str(item["name"]))
+        self.description.config(text="Description: "+str(item["description"]))
+        self.rating.config(text="Rating: "+str(item["rating"]))
+        self.author.config(text="Author: "+str(item["author"]["username"]))
+        self.price.config(text="Price: "+str(item["price"]))
+        self.amount.config(text="Amount: "+str(item["amount"]))
+        if access_token:
+            if str(httprequests.get_me(access_token)["id"]) == str(item["author"]["id"]):
+                self.update_item.pack()
+            else:
+                self.update_item.pack_forget()
 
     def change_item(self, n):
         global item_list
@@ -232,9 +256,9 @@ class NewItemPage(tk.Frame):
         self.name_entry = tk.Entry(self, textvariable=self.name)
         self.description = tk.StringVar()
         self.description_entry = tk.Entry(self, textvariable=self.description)
-        self.price = tk.StringVar()
+        self.price = tk.IntVar()
         self.price_entry = tk.Entry(self, textvariable=self.price)
-        self.amount = tk.StringVar()
+        self.amount = tk.IntVar()
         self.amount_entry = tk.Entry(self, textvariable=self.amount)
         self.tag1 = tk.StringVar()
         self.tag1_entry = tk.Entry(self, textvariable=self.tag1)
@@ -262,9 +286,12 @@ class NewItemPage(tk.Frame):
 
     def create_item(self):
         global access_token
-        data = {"name":str(self.name.get()), "description":str(self.description.get()),
-                "price":int(self.price.get()), "amount":int(self.amount.get()),
-                "tag1":str(self.tag1_entry.get()), "tag2":str(self.tag2_entry.get()),
+        data = {"name":str(self.name.get()),
+                "description":str(self.description.get()),
+                "price":int(self.price.get()),
+                "amount":int(self.amount.get()),
+                "tag1":str(self.tag1_entry.get()),
+                "tag2":str(self.tag2_entry.get()),
                 "tag3":str(self.tag3_entry.get())}
         request = httprequests.post_item(data, access_token)
         if "message" in request:
