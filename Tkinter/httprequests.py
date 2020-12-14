@@ -25,7 +25,7 @@ def post_rating(data, item_id, jwt):
     url = address + port + "items/" + str(item_id) + "/ratings"
     req = requests.post(url, json=data, headers={"Authorization":"Bearer "+jwt})
     return req.json()
-def get_user(username):
+def get_user_unregistered(username):
     url = address + port + "users/"+str(username)
     req = requests.get(url)
     return req.json()
@@ -49,4 +49,5 @@ def get_all_by_user(username):
     url = address + port + "users/" + username + "/items"
     req = requests.get(url)
     return req.json()
+print(get_item(1))
 
