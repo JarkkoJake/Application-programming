@@ -13,7 +13,7 @@ user_schema = UserSchema()
 user_public_schema = UserSchema(exclude = ("email", "created_at", "updated_at", ))
 user_profile_picture_schema = UserSchema(only=("profile_picture", ))
 
-class UserListResource(Resource):
+class UserListResource(Resource):   #Käyttäjän teko
     def post(self):
         json_data = request.get_json()
 
@@ -22,10 +22,10 @@ class UserListResource(Resource):
         if errors:
             return {"message":"Validation errors", "errors": errors}, HTTPStatus.BAD_REQUEST
 
-        if User.get_by_username(data.get("username")):
+        if User.get_by_username(data.get("username")): #Tarkistaa onko tällä käyttäjänimellä jo käyttäjä
             return {"message":"username already used"}, HTTPStatus.BAD_REQUEST
 
-        if User.get_by_email(data.get("email")):
+        if User.get_by_email(data.get("email")):    #Tarkistaa onko tällä sähköpostilla jo käyttäjä
             return {"message":"email already used"}, HTTPStatus.BAD_REQUEST
 
         user = User(**data)
@@ -33,7 +33,7 @@ class UserListResource(Resource):
 
         return user_schema.dump(user).data, HTTPStatus.CREATED
 
-class UserResource(Resource):
+class UserResource(Resource):   #Hakee käyttäjän joko JWT.n kanssa tai ilman
     @jwt_optional
     def get(self, username):
         user = User.get_by_username(username=username)
@@ -47,7 +47,7 @@ class UserResource(Resource):
         return data, HTTPStatus.OK
 
     @fresh_jwt_required
-    def patch(self, username):
+    def patch(self, username):  #Päivittää käyttäjän tiedot ja vaatii freshin tokenin.
         json_data = request.get_json()
         data, errors = user_schema.load(data = json_data, partial=("name",))
         current_user = get_jwt_identity()
@@ -66,7 +66,7 @@ class UserResource(Resource):
         user.save()
         return user_schema.dump(user).data, HTTPStatus.OK
 
-class MeResource(Resource):
+class MeResource(Resource):     #Hakee käyttäjän JWT.n mukaan
     @jwt_required
     def get(self):
         user = User.get_by_id(id = get_jwt_identity())

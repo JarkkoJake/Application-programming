@@ -2,6 +2,7 @@ from extensions import db
 from sqlalchemy.dialects import postgresql
 from http import HTTPStatus
 
+#Item constructer
 class Item(db.Model):
 
     __tablename__ = "item"
@@ -22,18 +23,27 @@ class Item(db.Model):
 
     ratings = db.relationship("Rating", backref="item")
 
+#Funktio joka hakee id.n mukaan esineitä
     @classmethod
     def get_by_id(cls, item_id):
         return cls.query.filter_by(id=item_id).first()
 
+#Funktio joka hakee tagien mukaan esineitä
     @classmethod
     def get_by_tag(cls, tags):
         return cls.query.filter_by(tag1=tags).all() + cls.query.filter_by(tag2=tags).all() + cls.query.filter_by(tag3=tags).all()
 
+#Funktio joka hakee nimen mukaan esineitä
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.query.filter_by(name=name).all()
+
+#Funktio joka hakee kaikki esineet
     @classmethod
     def get_all(cls):
         return cls.query.all()
 
+#Funktio joka hakee tietyn käyttäjän kaikki itemit
     @classmethod
     def get_all_by_user(cls, user_id):
         return cls.query.filter_by(user_id=user_id).all()

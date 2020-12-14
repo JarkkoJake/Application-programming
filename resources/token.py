@@ -8,7 +8,7 @@ from models.user import User
 
 black_list = set()
 
-class RevokeResource(Resource):
+class RevokeResource(Resource): #Ulos kirjaus
 
     @jwt_required
     def post(self):
@@ -18,7 +18,7 @@ class RevokeResource(Resource):
 
         return {"message": "Successfully logged out"}, HTTPStatus.OK
 
-class TokenResource(Resource):
+class TokenResource(Resource):  #Hakee jwt tokenin
 
     def post(self):
 
@@ -33,7 +33,7 @@ class TokenResource(Resource):
         refresh_token = create_refresh_token(identity=user.id)
         return {"access_token" : access_token, "refresh_token": refresh_token}, HTTPStatus.OK
 
-class RefreshResource(Resource):
+class RefreshResource(Resource):    #Hakee refresh tokenin.
 
     @jwt_refresh_token_required
     def post(self):

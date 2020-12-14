@@ -19,13 +19,13 @@ item_picture_schema = ItemSchema(only=("picture", ))
 
 class ItemListResource(Resource):
 
-    def get(self):
+    def get(self):  #Hakee kaikki itemit
 
         items = Item.get_all()
         return item_list_schema.dump(items).data, HTTPStatus.OK
 
     @jwt_required
-    def post(self):
+    def post(self): #Itemin luonti
 
         json_data = request.get_json()
         current_user = get_jwt_identity()
@@ -37,19 +37,19 @@ class ItemListResource(Resource):
 
         item = Item(**data)
 
-        if item.tag1 == item.tag2 or item.tag1 == item.tag3 or item.tag2 == item.tag3:
+        if item.tag1 == item.tag2 or item.tag1 == item.tag3 or item.tag2 == item.tag3:  #Validoi ettei tagit ole samoja.
             return {"message": "Tags cant be the same"}, HTTPStatus.BAD_REQUEST
 
         item.user_id = current_user
         item.save()
 
-        saveItemHistory(item.id)
+        saveItemHistory(item.id)    #Tallettaa itemin myös historiaan
 
         return item_schema.dump(item).data, HTTPStatus.CREATED
 
 class UserItemListResource(Resource):
     @jwt_optional
-    def get(self, username):
+    def get(self, username):    #Palauttaa tietyn käyttäjän kaikki itemit
         user = User.get_by_username(username=username)
         if not user:
             user_not_found()
@@ -60,7 +60,7 @@ class ItemResource(Resource):
 
 
     @jwt_required
-    def patch(self, item_id):
+    def patch(self, item_id):   #Päivittää itemin
 
         json_data = request.get_json()
 
@@ -95,8 +95,7 @@ class ItemResource(Resource):
 
         return item_schema.dump(item).data, HTTPStatus.OK
 
-    @jwt_optional
-    def get(self, item_id):
+    def get(self, item_id): #Hakee itemin id.n mukaan
 
         item = Item.get_by_id(item_id=item_id)
 
@@ -106,7 +105,7 @@ class ItemResource(Resource):
         return item_schema.dump(item), HTTPStatus.OK
 
     @jwt_required
-    def put(self, item_id):
+    def put(self, item_id): #Korvaa olemassa olevan itemin
 
         json_data = request.get_json()
 
@@ -136,7 +135,7 @@ class ItemResource(Resource):
         return item.data, HTTPStatus.OK
 
     @jwt_required
-    def delete(self, item_id):
+    def delete(self, item_id): #Poistaa itemin, mutta jättää sen historia tauluun.
 
         item = Item.get_by_id(item_id=item_id)
 
@@ -144,7 +143,6 @@ class ItemResource(Resource):
             return {"message": "Item not found"}, HTTPStatus.NOT_FOUND
 
         current_user = get_jwt_identity()
-
         if current_user != item.user_id:
             return {"message": "Access is not allowed"}, HTTPStatus.FORBIDDEN
 
@@ -152,7 +150,7 @@ class ItemResource(Resource):
 
         return {"message": "Item deleted"}, HTTPStatus.NO_CONTENT
 
-class ItemTagResource(Resource):
+class ItemTagResource(Resource):    #Hakee tagien mukaan
 
     def get(self, tags):
 
@@ -160,6 +158,18 @@ class ItemTagResource(Resource):
 
         if items is None:
             return {"message": "Items with this tag cannot be found"}, HTTPStatus.NOT_FOUND
+
+        return item_list_schema.dump(items).data, HTTPStatus.OK
+
+class ItemNameResource(Resource):   #Hakee itemin nimen mukaan.
+
+    def get(self, name):
+
+        items = Item.get_by_name(name=name)
+
+        if items is None:
+
+            return {"message": "Items with this name cannot be found"}, HTTPStatus.NOT_FOUND
 
         return item_list_schema.dump(items).data, HTTPStatus.OK
 
