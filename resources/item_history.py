@@ -5,7 +5,7 @@ from models.user import User
 from models.item_history import HistoryItem
 from models.item import Item
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
-from resources.util import user_not_found,item_not_found
+from resources.util import user_not_found, item_not_found
 from webargs import fields
 from webargs.flaskparser import use_kwargs
 from schemas.item_history import ItemHistorySchema
@@ -25,29 +25,50 @@ class ItemHistoryListResource(Resource):
     def get(self):
 
         items = HistoryItem.get_all()
+        current_user = get_jwt_identity()
+        user = User.get_by_id(current_user)
+
+        if not user.is_admin:
+            return {"message": "Access is not allowed"}, HTTPStatus.FORBIDDEN
+
         return item_list_schema.dump(items).data, HTTPStatus.OK
 
 
 class UserItemHistoryListResource(Resource):
 
     # Haetaan usernamin kaikkien itemien historia
-    @jwt_optional
+    @jwt_required
     def get(self, username):
-        user = User.get_by_username(username=username)
-        if not user:
-            user_not_found()
-        items = HistoryItem.get_all_by_user(user_id=user.id)
+
+        itemuser = User.get_by_username(username=username)
+        current_user = get_jwt_identity()
+        user = User.get_by_id(current_user)
+
+        if not user.is_admin:
+            return {"message": "Access is not allowed"}, HTTPStatus.FORBIDDEN
+
+        if itemuser is None:
+            return user_not_found()
+        items = HistoryItem.get_all_by_user(user_id=itemuser.id)
         return item_list_schema.dump(items).data, HTTPStatus.OK
 
 
 class ItemHistoryResource(Resource):
 
     # Haetaan tietyn itemin muutokset
+    @jwt_required
     def get(self, original_item_id):
 
         items = HistoryItem.get_by_original_item_id(item_id=original_item_id)
-        if not items:
-            item_not_found()
+        current_user = get_jwt_identity()
+        user = User.get_by_id(current_user)
+        originalitem = Item.get_by_id(item_id=original_item_id)
+
+        if not user.is_admin:
+            return {"message": "Access is not allowed"}, HTTPStatus.FORBIDDEN
+
+        if originalitem is None:
+            return item_not_found()
         return item_list_schema.dump(items).data, HTTPStatus.OK
 
 

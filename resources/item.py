@@ -58,7 +58,7 @@ class UserItemListResource(Resource):
     def get(self, username):    #Palauttaa tietyn käyttäjän kaikki itemit
         user = User.get_by_username(username=username)
         if not user:
-            user_not_found()
+            return user_not_found()
         items = Item.get_all_by_user(user_id=user.id)
         return item_list_schema.dump(items).data, HTTPStatus.OK
 

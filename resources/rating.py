@@ -56,7 +56,7 @@ class RatingListResource(Resource):
             return {"message": "Validation errors", "errors": errors}, HTTPStatus.BAD_REQUEST
 
         if item is None:
-            return {"message": "item not found"}, HTTPStatus.NOT_FOUND
+            return item_not_found()
 
         if current_user != item.user_id:
             return {"message": "Access not allowed"}, HTTPStatus.FORBIDDEN

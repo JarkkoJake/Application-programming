@@ -8,6 +8,7 @@ from resources.token import TokenResource, RefreshResource, RevokeResource, blac
 from resources.rating import RatingListResource
 from extensions import jwt, db, image_set
 from flask_uploads import configure_uploads, patch_request_class
+from resources.item_history import ItemHistoryResource, ItemHistoryListResource, UserItemHistoryListResource
 
 # Päivittäkää oman porttinne mukaan
 port = 5000
@@ -48,6 +49,9 @@ def register_resources(app):
     api.add_resource(RefreshResource, "/refresh")
     api.add_resource(RevokeResource, "/revoke")
     api.add_resource(RatingListResource, "/items/<int:item_id>/ratings")
+    api.add_resource(ItemHistoryListResource, "/items/history")
+    api.add_resource(ItemHistoryResource, "/items/<int:original_item_id>/history")
+    api.add_resource(UserItemHistoryListResource, "/users/<string:username>/history")
 
 if __name__ == "__main__":
     app = create_app()
