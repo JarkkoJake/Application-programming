@@ -38,7 +38,7 @@ class UserResource(Resource):   #Hakee käyttäjän joko JWT.n kanssa tai ilman
     def get(self, username):
         user = User.get_by_username(username=username)
         if not user:
-            user_not_found()
+            return user_not_found()
         current_user = get_jwt_identity()
         if current_user == user.id:
             data = user_schema.dump(user).data
