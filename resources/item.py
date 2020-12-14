@@ -38,7 +38,13 @@ class ItemListResource(Resource):
         item = Item(**data)
 
         if item.tag1 == item.tag2 or item.tag1 == item.tag3 or item.tag2 == item.tag3:  #Validoi ettei tagit ole samoja.
-            return {"message": "Tags cant be the same"}, HTTPStatus.BAD_REQUEST
+
+            if item.tag1 and item.tag2 != None:
+                return {"message": "Tags cant be the same"}, HTTPStatus.BAD_REQUEST
+            if item.tag1 and item.tag3 != None:
+                return {"message": "Tags cant be the same"}, HTTPStatus.BAD_REQUEST
+            if item.tag2 and item.tag3 != None:
+                return {"message": "Tags cant be the same"}, HTTPStatus.BAD_REQUEST
 
         item.user_id = current_user
         item.save()
@@ -84,8 +90,6 @@ class ItemResource(Resource):
         item.tag1 = data.get("tag1") or item.tag1
         item.tag2 = data.get("tag2") or item.tag2
         item.tag3 = data.get("tag3") or item.tag3
-        item.ratings = data.get("ratings") or item.ratings
-        item.rating = data.get("rating") or item.rating
         item.price = data.get("price") or item.price
         item.amount = data.get("amount") or item.amount
 
@@ -124,8 +128,6 @@ class ItemResource(Resource):
         item.tag1 = json_data["tag1"]
         item.tag2 = json_data["tag2"]
         item.tag3 = json_data["tag3"]
-        item.ratings = json_data["ratings"]
-        item.rating = json_data["rating"]
         item.price = json_data["price"]
         item.amount = json_data["amount"]
 
