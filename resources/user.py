@@ -41,12 +41,10 @@ class UserResource(Resource):   #Hakee käyttäjän joko JWT.n kanssa tai ilman
             return user_not_found()
         current_user = get_jwt_identity()
         cuser = User.get_by_id(id=current_user)
-        if cuser is None:
-            isAdmin = False
-        elif cuser.is_admin:
-            isAdmin = True
-        else:
-            isAdmin = False
+        isAdmin = False
+        if cuser is not None:
+            if cuser.is_admin:
+                isAdmin = True
 
         if current_user == user.id or isAdmin:
             data = user_schema.dump(user).data
