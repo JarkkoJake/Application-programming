@@ -2,9 +2,6 @@ from extensions import db
 from sqlalchemy.dialects import postgresql
 
 
-#item_list = []
-
-
 class HistoryItem(db.Model):
 
     __tablename__ = "item_history"

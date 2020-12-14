@@ -4,7 +4,7 @@ from http import HTTPStatus
 from models.user import User
 from models.item import Item
 from models.rating import Rating
-from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from schemas.rating import RatingSchema
 from resources.util import item_not_found
 

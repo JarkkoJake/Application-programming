@@ -1,4 +1,3 @@
-from flask import request
 from flask_restful import Resource
 from http import HTTPStatus
 from models.user import User
@@ -6,12 +5,7 @@ from models.item_history import HistoryItem
 from models.item import Item
 from flask_jwt_extended import get_jwt_identity, jwt_required, jwt_optional
 from resources.util import user_not_found, item_not_found
-from webargs import fields
-from webargs.flaskparser import use_kwargs
 from schemas.item_history import ItemHistorySchema
-import os
-from utils import save_image
-from extensions import image_set
 
 
 item_schema = ItemHistorySchema()
