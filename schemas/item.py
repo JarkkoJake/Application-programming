@@ -25,8 +25,6 @@ class ItemSchema(Schema):
     updated_at = fields.DateTime(dump_only=True)
     picture = fields.Method(serialize="dump_picture")
 
-    validate = validate
-
     def dump_picture(self, item):
         if item.picture:
             return url_for("static", filename="images/pictures/{}".format(item.picture),
