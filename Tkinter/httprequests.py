@@ -57,5 +57,12 @@ def get_all_by_user(username):
     url = address + port + "users/" + username + "/items"
     req = requests.get(url)
     return req.json()
-print(get_item(1))
+def patch_item(data, jwt):
+    url = address + port + "items/" + str(data["id"])
+    req = requests.patch(url, json=data, headers={"Authorization":"Bearer "+jwt})
+    return req
+def delete_item(data, jwt):
+    url = address + port + "items/" + str(data["id"])
+    req = requests.delete(url, headers={"Authorization":"Bearer "+jwt})
+    return req
 
