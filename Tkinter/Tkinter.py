@@ -227,8 +227,8 @@ class PageTwo(tk.Frame): # items page
         if access_token: # if logged in and you are looking at your own item, pack the update button
             if str(httprequests.get_me(access_token)["id"]) == str(item["author"]["id"]):
                 self.update_item.pack()
-        else:
-            self.update_item.pack_forget()
+            else:
+                self.update_item.pack_forget()
 
     def change_item(self, n): # method used to loop through items
         global item_list
