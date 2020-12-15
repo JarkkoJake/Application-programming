@@ -25,6 +25,7 @@ class RatingSchema(Schema):
             return {"data": data}
         return data
 
+# rating arvon täytyy olla 0-5
     @validates("rating")
     def validate_rating(self, value):
         if value < 0:

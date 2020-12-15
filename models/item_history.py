@@ -2,6 +2,7 @@ from extensions import db
 from sqlalchemy.dialects import postgresql
 
 
+# HistoryItem constructor
 class HistoryItem(db.Model):
 
     __tablename__ = "item_history"
@@ -20,14 +21,17 @@ class HistoryItem(db.Model):
     user_id = db.Column(db.Integer())
     created_at = db.Column(db.DateTime(), nullable=False, server_default=db.func.now())
 
+# Funktio joka hakee original_item_id:n mukaan kaikki esineet
     @classmethod
     def get_by_original_item_id(cls, item_id):
         return cls.query.filter_by(original_item_id=item_id).all()
 
+# Funktio joka hakee kaikki esineet item_history tablesta
     @classmethod
     def get_all(cls):
         return cls.query.all()
 
+# Funktio joka hakee user_id:n mukaan kaikki esineet
     @classmethod
     def get_all_by_user(cls, user_id):
         return cls.query.filter_by(user_id=user_id).all()
