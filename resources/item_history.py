@@ -30,7 +30,7 @@ class ItemHistoryListResource(Resource):
 
 class UserItemHistoryListResource(Resource):
 
-    # Haetaan usernamin kaikkien itemien historia
+    # Haetaan usernamen kaikkien itemien historia
     @jwt_required
     def get(self, username):
 

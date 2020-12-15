@@ -44,7 +44,6 @@ def register_resources(app):
     api.add_resource(ItemTagResource, "/tags/<string:tags>")
     api.add_resource(ItemNameResource, "/item/<string:name>")
     api.add_resource(ItemPictureUploadResource, "/items/<int:item_id>/picture")
-    # api.add_resource(ItemRatingsResource, "/items/<int:item_id>/ratings")
     api.add_resource(TokenResource, "/token")
     api.add_resource(RefreshResource, "/refresh")
     api.add_resource(RevokeResource, "/revoke")
